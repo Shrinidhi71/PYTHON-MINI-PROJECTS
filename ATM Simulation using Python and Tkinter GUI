@@ -1,0 +1,132 @@
+import tkinter as tk
+
+from tkinter import messagebox
+
+
+
+class SimpleATM:
+
+    def __init__(self, window):
+
+        self.window = window
+
+        self.window.title("ATM")
+
+        self.balance = 10000.00
+
+
+
+        self.label = tk.Label(window, text="ATM", font=('Arial', 20))
+
+        self.label.pack(pady=10)
+
+
+
+        tk.Button(window, text="Check Balance", command=self.show_balance, width=20).pack(pady=5)
+
+        tk.Button(window, text="Deposit", command=self.deposit_money, width=20).pack(pady=5)
+
+        tk.Button(window, text="Withdrawal", command=self.withdraw_money, width=20).pack(pady=5)
+
+        tk.Button(window, text="Exit", command=window.quit, width=20).pack(pady=5)
+
+
+
+    def show_balance(self):
+
+        messagebox.showinfo("Your Balance", f"Balance: ${self.balance:.2f}")
+
+
+
+    def deposit_money(self):
+
+        self.get_amount("Deposit", self.add_to_balance)
+
+
+
+    def withdraw_money(self):
+
+        self.get_amount("Withdraw", self.take_from_balance)
+
+
+
+    def get_amount(self, action, callback):
+
+        amount_window = tk.Toplevel(self.window)
+
+        amount_window.title(action)
+
+
+
+        tk.Label(amount_window, text="Enter amount:").pack(pady=5)
+
+        amount_entry = tk.Entry(amount_window)
+
+        amount_entry.pack(pady=5)
+
+
+
+        def submit():
+
+            try:
+
+                amount = float(amount_entry.get())
+
+                callback(amount)
+
+                amount_window.destroy()
+
+            except ValueError:
+
+                messagebox.showerror("Invalid", "Please enter a valid amount")
+
+
+
+        tk.Button(amount_window, text="Submit", command=submit).pack(pady=5)
+
+
+
+    def add_to_balance(self, amount):
+
+        if amount > 0:
+
+            self.balance += amount
+
+            messagebox.showinfo("Success", f"${amount:.2f} added to your account")
+
+        else:
+
+            messagebox.showerror("Error", "Amount must be positive")
+
+
+
+    def take_from_balance(self, amount):
+
+        if amount <= 0:
+
+            messagebox.showerror("Error", "Amount must be positive")
+
+        elif amount > self.balance:
+
+            messagebox.showerror("Error", "Not enough balance")
+
+        else:
+
+            self.balance -= amount
+
+            messagebox.showinfo("Success", f"${amount:.2f} withdrawn from your account")
+
+
+
+if __name__ == "__main__":
+
+    root = tk.Tk()
+
+    atm_app = SimpleATM(root)
+
+    root.mainloop()
+
+
+
+
+
